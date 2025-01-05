@@ -1,0 +1,20 @@
+# Core dependencies
+qdrant-client>=1.7.0
+neo4j>=5.15.0
+modelcontextprotocol>=0.1.0
+fastapi>=0.104.0
+pydantic>=2.5.0
+uvicorn>=0.24.0
+python-dotenv>=1.0.0
+
+# NLP and ML
+sentence-transformers>=2.2.2
+spacy>=3.7.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+
+# Utilities
+tqdm>=4.66.0
+python-dateutil>=2.8.2
+aiohttp>=3.9.0
+asyncio>=3.4.3

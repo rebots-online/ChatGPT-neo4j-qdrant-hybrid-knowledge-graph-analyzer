@@ -1,0 +1,71 @@
+# Chat Knowledge Grapher Configuration
+
+# Neo4j Configuration
+neo4j:
+  host: "192.168.0.157"
+  port: 7687
+  user: "neo4j"
+  password: "Ch4n3l.C"  # Change this in your local config
+  database: "neo4j"
+
+# Qdrant Configuration
+qdrant:
+  host: "192.168.0.157"
+  port: 6333
+  collection_name: "chat_embeddings"
+  vector_size: 384  # For all-MiniLM-L6-v2 model
+
+# Embedding Model Configuration
+embeddings:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  batch_size: 32
+  max_length: 512
+  device: "cpu"  # or "cuda" for GPU support
+
+# Analysis Configuration
+analysis:
+  chunk_size: 512  # Size of text chunks for embedding
+  overlap: 128     # Overlap between chunks
+  min_concept_relevance: 0.5
+  max_concepts_per_message: 10
+  
+  # Metrics to compute
+  metrics:
+    - message_frequency
+    - response_times
+    - topic_diversity
+    - conversation_depth
+    - interaction_patterns
+
+# Import Configuration
+import:
+  supported_formats:
+    - openai_native
+    - html
+    - markdown
+    - json
+  max_batch_size: 100
+  parallel_processing: true
+  threads: 4
+
+# MCP Server Configuration
+mcp_server:
+  name: "chat-analysis-server"
+  version: "0.1.0"
+  log_level: "INFO"
+  max_request_size: 10485760  # 10MB
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  file: "logs/chat-knowledge-grapher.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Storage Configuration
+storage:
+  data_dir: "data"
+  cache_dir: "cache"
+  export_dir: "exports"
+  max_cache_size: 1073741824  # 1GB
