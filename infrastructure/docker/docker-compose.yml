@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:5.15.0-community
+    container_name: chat-analyzer-neo4j
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    environment:
+      - NEO4J_AUTH=neo4j/changeme  # Change this in production
+      - NEO4J_server_default__listen__address=0.0.0.0
+      - NEO4J_dbms_memory_heap_initial__size=1G
+      - NEO4J_dbms_memory_heap_max__size=2G
+      - NEO4J_dbms_memory_pagecache_size=512M
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    networks:
+      - chat_analyzer_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: chat-analyzer-qdrant
+    ports:
+      - "6333:6333"  # REST API
+      - "6334:6334"  # GRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT_ALLOW_RECOVERY=true
+      - QDRANT_LOG_LEVEL=INFO
+    networks:
+      - chat_analyzer_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  neo4j_import:
+    driver: local
+  neo4j_plugins:
+    driver: local
+  qdrant_data:
+    driver: local
+
+networks:
+  chat_analyzer_net:
+    driver: bridge
+    name: chat_analyzer_net
+
+# Usage:
+# 1. Copy this file to your project directory
+# 2. Create a .env file with your configuration:
+#    NEO4J_PASSWORD=your_secure_password
+#    QDRANT_API_KEY=your_api_key  # Optional
+# 3. Run: docker compose up -d
+# 4. Access:
+#    - Neo4j Browser: http://localhost:7474
+#    - Qdrant API: http://localhost:6333
